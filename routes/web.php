@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::resource('students',StudentController::class);
+Route::get('/get-address/{pincode}', [StudentController::class, 'getAddress']);

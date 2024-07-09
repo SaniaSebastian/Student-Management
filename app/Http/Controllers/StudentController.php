@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\StudentController;
 use Illuminate\Http\Request;
 use App\Models\Student;
@@ -18,6 +19,19 @@ class StudentController extends Controller
      */
     public function index()
     {
+//         $pin_code = 686578;
+//         $response = Http::get("https://api.postalpincode.in/pincode/{$pin_code}");
+//         $data = $response->json();
+//         dd($data);
+// dd($response);
+//         if ($response->successful()) {
+//             $data = $response->json();
+//             if ($data[0]['Status'] == 'Success') {
+//                 return response()->json($data[0]['PostOffice']);
+//             } else {
+//                 return response()->json(['error' => 'Address not found'], 404);
+//             }
+//         }
         $subjects = Subject::all();
         $students = Student::with('address', 'subjectMarks')->get();
         
@@ -33,9 +47,17 @@ class StudentController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function getAddress($pincode)
+    {
+        $response = Http::get("https://api.postalpincode.in/pincode/{$pincode}");
+        $data = $response->json();
+
+        if ($response->successful() && $data[0]['Status'] == 'Success') {
+            return response()->json($data[0]['PostOffice']);
+        } else {
+            return response()->json(['error' => 'Address not found'], 404);
+        }
+    }
 
 public function store(Request $request)
 {

@@ -333,3 +333,30 @@ form .gender{
     </div>
     </body>
     </html>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#pincode').on('blur', function() {
+        var pincode = $(this).val();
+        if (pincode) {
+            $.ajax({
+                url: '/get-address/' + pincode,
+                type: 'GET',
+                success: function(data) {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        var postOffice = data[0]; // assuming you want the first post office in the list
+                        $('#city').val(postOffice.District);
+                        $('#post_office').val(postOffice.Name);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error fetching address.');
+                }
+            });
+        }
+    });
+});
+</script>
